@@ -1,6 +1,6 @@
 package com.example.app.domains.crudexample.services
 
 import com.example.app.domains.crudexample.models.entities.CrudExample
-import com.example.coreweb.domains.base.services.CrudService
+import com.example.coreweb.domains.base.services.CrudServiceV2
 
-interface CrudExampleService : CrudService<CrudExample>
+interface CrudExampleService : CrudServiceV2<CrudExample>

@@ -5,7 +5,9 @@ import com.example.app.domains.crudexample.models.mappers.CrudExampleMapper
 import com.example.app.domains.crudexample.services.CrudExampleService
 import com.example.app.routing.Route
 import com.example.common.utils.ExceptionUtil
-import com.example.coreweb.domains.base.controllers.CrudWebController
+import com.example.coreweb.domains.base.controllers.CrudWebControllerV2
+import com.example.coreweb.domains.base.models.enums.SortByFields
+import org.springframework.data.domain.Sort
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -17,7 +19,7 @@ import javax.validation.Valid
 class CrudExampleWebController @Autowired constructor(
         private val crudExampleService: CrudExampleService,
         private val crudExampleMapper: CrudExampleMapper
-) : CrudWebController<CrudExampleDto> {
+) : CrudWebControllerV2<CrudExampleDto> {
 
     /*
         COPY THESE URLS TO ROUTE FILE AND ADJUST
@@ -37,8 +39,10 @@ class CrudExampleWebController @Autowired constructor(
     override fun search(@RequestParam("q", defaultValue = "") query: String,
                         @RequestParam("page", defaultValue = "0") page: Int,
                         @RequestParam("size", defaultValue = "10") size: Int,
+                        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
+                        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction,
                         model: Model): String {
-        val entities = this.crudExampleService.search(query, page, size)
+        val entities = this.crudExampleService.search(query, page, size, sortBy, direction)
         model.addAttribute("crudexamples", entities)
         return "crudexamples/fragments/all"
     }

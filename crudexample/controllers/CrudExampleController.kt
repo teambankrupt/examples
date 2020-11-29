@@ -5,20 +5,22 @@ import com.example.app.domains.crudexample.models.mappers.CrudExampleMapper
 import com.example.app.domains.crudexample.services.CrudExampleService
 import com.example.app.routing.Route
 import com.example.common.utils.ExceptionUtil
-import com.example.coreweb.domains.base.controllers.CrudController
+import com.example.coreweb.domains.base.controllers.CrudControllerV2
+import com.example.coreweb.domains.base.models.enums.SortByFields
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
+import org.springframework.data.domain.Sort
 
 @RestController
 @Api(tags = ["CrudExamples"], description = "Description about CrudExamples")
 class CrudExampleController @Autowired constructor(
         private val crudExampleService: CrudExampleService,
         private val crudExampleMapper: CrudExampleMapper
-) : CrudController<CrudExampleDto> {
+) : CrudControllerV2<CrudExampleDto> {
 
     /*
         COPY THESE URLS TO ROUTE FILE AND ADJUST
@@ -35,8 +37,10 @@ class CrudExampleController @Autowired constructor(
     @GetMapping(Route.V1.SEARCH_CRUDEXAMPLES)
     override fun search(@RequestParam("q", defaultValue = "") query: String,
                         @RequestParam("page", defaultValue = "0") page: Int,
-                        @RequestParam("size", defaultValue = "10") size: Int): ResponseEntity<Page<CrudExampleDto>> {
-        val entities = this.crudExampleService.search(query, page, size)
+                        @RequestParam("size", defaultValue = "10") size: Int,
+                        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
+                        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction): ResponseEntity<Page<CrudExampleDto>> {
+        val entities = this.crudExampleService.search(query, page, size, sortBy, direction)
         return ResponseEntity.ok(entities.map { this.crudExampleMapper.map(it) })
     }
 

@@ -9,14 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import java.util.*
+import com.example.coreweb.domains.base.models.enums.SortByFields
+import org.springframework.data.domain.Sort
 
 @Service
 class CrudExampleServiceBean @Autowired constructor(
         private val crudExampleRepository: CrudExampleRepository
 ) : CrudExampleService {
 
-    override fun search(query: String, page: Int, size: Int): Page<CrudExample> {
-        return this.crudExampleRepository.search(query, PageAttr.getPageRequest(page, size))
+    override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<CrudExample> {
+        return this.crudExampleRepository.search(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
     override fun save(entity: CrudExample): CrudExample {
