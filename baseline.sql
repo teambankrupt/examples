@@ -471,3 +471,49 @@ alter table if exists vfs.vfs_folders
     add constraint FK1wulxxd7mghr0vnmxv2cowyii foreign key (parent_id) references vfs.vfs_folders;
 alter table if exists firebase_user_token
     add constraint FKijg4ywkf6r83uvyp905o6omwc foreign key (user_id) references auth.m_users;
+
+
+create table core_web.location_types
+(
+    id          bigserial    not null,
+    created_at  timestamp    not null,
+    created_by  varchar(255),
+    deleted     boolean      not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    uuid_str    varchar(255) not null,
+    code        varchar(255) not null,
+    description varchar(255) not null,
+    label       varchar(255) not null,
+    parent_id   bigint       null references core_web.location_types,
+    primary key (id)
+);
+alter table if exists core_web.location_types
+    add constraint UK_8uclq1kkf5hotxqdya4kxmrha unique (uuid_str);
+alter table if exists core_web.location_types
+    add constraint UK_5ncliyij68finh5pk31l18xy7 unique (code);
+
+create table core_web.locations
+(
+    id          bigserial    not null,
+    created_at  timestamp    not null,
+    created_by  varchar(255),
+    deleted     boolean      not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    uuid_str    varchar(255) not null,
+    altitude    float8       not null,
+    code        varchar(255) not null,
+    description varchar(255),
+    label       varchar(255) not null,
+    latitude    float8       not null,
+    longitude   float8       not null,
+    parent_id   bigint       null references core_web.locations,
+    type_id     bigint       not null references core_web.location_types,
+    primary key (id)
+);
+
+alter table if exists core_web.locations
+    add constraint UK_45h1u604nv1wxu20l36nkkp0w unique (uuid_str);
+alter table if exists core_web.locations
+    add constraint UK_njcw38t3qcy312pglqpf3pd59 unique (code);
