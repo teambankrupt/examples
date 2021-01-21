@@ -12,8 +12,8 @@ import java.util.*
 @Repository
 interface CrudExampleRepository : JpaRepository<CrudExample, Long> {
 
-    @Query("SELECT e FROM CrudExample e WHERE (:q IS NULL OR e.createdBy LIKE %:q%) AND e.deleted=FALSE")
-    fun search(@Param("q") query: String, pageable: Pageable): Page<CrudExample>
+    @Query("SELECT e FROM CrudExample e WHERE (:q IS NULL OR LOWER(e.createdBy) LIKE %:q%) AND e.deleted=FALSE")
+    fun search(@Param("q") query: String?, pageable: Pageable): Page<CrudExample>
 
     @Query("SELECT e FROM CrudExample e WHERE e.id=:id AND e.deleted=FALSE")
     fun find(@Param("id") id: Long): Optional<CrudExample>

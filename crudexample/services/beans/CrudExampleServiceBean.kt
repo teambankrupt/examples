@@ -18,7 +18,7 @@ class CrudExampleServiceBean @Autowired constructor(
 ) : CrudExampleService {
 
     override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<CrudExample> {
-        return this.crudExampleRepository.search(query, PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+        return this.crudExampleRepository.search(query.toLowerCase(), PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
     }
 
     override fun save(entity: CrudExample): CrudExample {
