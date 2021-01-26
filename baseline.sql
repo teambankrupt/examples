@@ -517,3 +517,29 @@ alter table if exists core_web.locations
     add constraint UK_45h1u604nv1wxu20l36nkkp0w unique (uuid_str);
 alter table if exists core_web.locations
     add constraint UK_njcw38t3qcy312pglqpf3pd59 unique (code);
+
+create table core_web.global_addresss
+(
+    id               bigserial    not null,
+    created_at       timestamp    not null,
+    created_by       varchar(255),
+    deleted          boolean      not null,
+    updated_at       timestamp,
+    updated_by       varchar(255),
+    uuid_str         varchar(255) not null,
+    address_line_one varchar(255) not null,
+    address_line_two varchar(255),
+    zip_code         varchar(255),
+    location_id      int8         not null,
+    primary key (id)
+);
+alter table if exists core_web.global_addresss
+    add constraint UK_q9oqaf1s9030mc49ld7so4bxt unique (uuid_str);
+alter table if exists core_web.global_addresss
+    add constraint FKlsldtrg0te48jaychrl46xq96 foreign key (location_id) references core_web.locations;
+
+alter table core_web.location_types add column level int4 not null default 0;
+
+alter table core_web.global_addresss add column latitude double precision not null default 0.0;
+alter table core_web.global_addresss add column longitude double precision not null default 0.0;
+alter table core_web.global_addresss add column altitude double precision not null default 0.0;

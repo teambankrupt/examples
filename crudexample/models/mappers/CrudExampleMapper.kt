@@ -10,15 +10,22 @@ class CrudExampleMapper : BaseMapper<CrudExample, CrudExampleDto> {
 
     override fun map(entity: CrudExample): CrudExampleDto {
         val dto = CrudExampleDto()
-        dto.id = entity.id
-        dto.createdAt = entity.createdAt
-        dto.updatedAt = entity.updatedAt
+
+        dto.apply {
+            this.id = entity.id
+            this.createdAt = entity.createdAt
+            this.updatedAt = entity.updatedAt
+        }
 
         return dto
     }
 
     override fun map(dto: CrudExampleDto, exEntity: CrudExample?): CrudExample {
         val entity = exEntity ?: CrudExample()
+
+        entity.apply {
+
+        }
 
         return entity
     }
