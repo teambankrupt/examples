@@ -543,3 +543,25 @@ alter table core_web.location_types add column level int4 not null default 0;
 alter table core_web.global_addresss add column latitude double precision not null default 0.0;
 alter table core_web.global_addresss add column longitude double precision not null default 0.0;
 alter table core_web.global_addresss add column altitude double precision not null default 0.0;
+
+
+drop table if exists auth.privileges_access_urls;
+
+create table auth.url_accesses
+(
+    id           bigserial    not null,
+    created_at   timestamp    not null,
+    created_by   varchar(255),
+    deleted      boolean      not null,
+    updated_at   timestamp,
+    updated_by   varchar(255),
+    uuid_str     varchar(255) not null,
+    access_level varchar(255) not null,
+    url          varchar(255) not null,
+    privilege_id int8         not null,
+    primary key (id)
+);
+alter table if exists auth.url_accesses
+    add constraint UK_coxmhnwnbom5xdb78ufvm62yk unique (uuid_str);
+alter table if exists auth.url_accesses
+    add constraint FKpqjwffbupefmw8vo83e22gnaj foreign key (privilege_id) references auth.privileges;
