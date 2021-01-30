@@ -565,3 +565,6 @@ alter table if exists auth.url_accesses
     add constraint UK_coxmhnwnbom5xdb78ufvm62yk unique (uuid_str);
 alter table if exists auth.url_accesses
     add constraint FKpqjwffbupefmw8vo83e22gnaj foreign key (privilege_id) references auth.privileges;
+
+alter table core_web.location_types add path varchar(255) null;
+alter table core_web.locations add path varchar(255) null;
