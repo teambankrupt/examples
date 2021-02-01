@@ -568,3 +568,34 @@ alter table if exists auth.url_accesses
 
 alter table core_web.location_types add path varchar(255) null;
 alter table core_web.locations add path varchar(255) null;
+
+create table core_web.contacts
+(
+    id         bigserial    not null,
+    created_at timestamp    not null,
+    created_by varchar(255),
+    deleted    boolean      not null,
+    updated_at timestamp,
+    updated_by varchar(255),
+    uuid_str   varchar(255) not null,
+    email      varchar(255),
+    name       varchar(255) not null,
+    phone      varchar(255) not null,
+    primary key (id)
+);
+alter table if exists core_web.contacts add constraint UK_ovv7s65bmp5dw3h8f2fxxtqxy unique (uuid_str);
+
+alter table core_web.global_addresss add column title varchar(255) not null default '';
+
+create table core_web.contact_addresses
+(
+    contact_id int8 not null,
+    address_id int8 not null
+);
+
+alter table if exists core_web.contact_addresses
+    add constraint UK_mxmb2y0iu8624h4rrdamayobp unique (address_id);
+alter table if exists core_web.contact_addresses
+    add constraint FKprj22aiexaxnslegti8rkvkc8 foreign key (address_id) references core_web.global_addresss;
+alter table if exists core_web.contact_addresses
+    add constraint FK1by3vge8px26bvlpc6lbv6ocf foreign key (contact_id) references core_web.contacts;
