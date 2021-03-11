@@ -599,3 +599,25 @@ alter table if exists core_web.contact_addresses
     add constraint FKprj22aiexaxnslegti8rkvkc8 foreign key (address_id) references core_web.global_addresss;
 alter table if exists core_web.contact_addresses
     add constraint FK1by3vge8px26bvlpc6lbv6ocf foreign key (contact_id) references core_web.contacts;
+
+-- New Migration
+create table if not exists acl.profiles
+(
+    id bigserial NOT NULL,
+    created_at     timestamp    NOT NULL,
+    created_by     varchar(255),
+    deleted        boolean      NOT NULL,
+    updated_at     timestamp,
+    updated_by     varchar(255),
+    uuid_str       varchar(255) NOT NULL,
+
+    birthday       timestamp    NOT NULL,
+    photo          varchar(255),
+    gender         varchar(100) NOT NULL,
+    blood_group    varchar(100),
+    marital_status varchar(100),
+    religion       varchar(100),
+    user_id        bigint references auth.m_users,
+    contact_id     bigint references core_web.contacts,
+    primary key (id)
+);
