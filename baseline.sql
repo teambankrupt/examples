@@ -621,3 +621,10 @@ create table if not exists acl.profiles
     contact_id     bigint references core_web.contacts,
     primary key (id)
 );
+
+
+-- New Migration
+alter table acl.profiles drop column contact_id;
+
+delete from core_web.contacts where true;
+alter table core_web.contacts add column user_id bigint not null default 0 references auth.m_users;
