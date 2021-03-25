@@ -628,3 +628,4 @@ alter table acl.profiles drop column contact_id;
 
 delete from core_web.contacts where true;
 alter table core_web.contacts add column user_id bigint not null default 0 references auth.m_users;
+update auth.m_users set gender='NOT_SPECIFIED' where true;
