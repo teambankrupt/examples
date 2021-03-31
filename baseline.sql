@@ -630,3 +630,6 @@ delete from core_web.contacts where true;
 alter table core_web.contacts add column user_id bigint not null default 0 references auth.m_users;
 update auth.m_users set gender='NOT_SPECIFIED' where true;
 alter table acl.profiles drop gender;
+
+alter table core_web.contacts add column is_self boolean not null default false;
+alter table core_web.contact_addresses drop constraint UK_mxmb2y0iu8624h4rrdamayobp;
