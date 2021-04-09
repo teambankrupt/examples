@@ -14,6 +14,7 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import javax.validation.Valid
+import com.example.coreweb.utils.PageableParams
 
 @Controller
 class CrudExampleWebController @Autowired constructor(
@@ -42,7 +43,7 @@ class CrudExampleWebController @Autowired constructor(
                         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
                         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction,
                         model: Model): String {
-        val entities = this.crudExampleService.search(query, page, size, sortBy, direction)
+        val entities = this.crudExampleService.search(PageableParams.of(query, page, size, sortBy, direction))
         model.addAttribute("crudexamples", entities)
         return "crudexamples/fragments/all"
     }

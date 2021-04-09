@@ -11,14 +11,15 @@ import org.springframework.stereotype.Service
 import java.util.*
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import org.springframework.data.domain.Sort
+import com.example.coreweb.utils.PageableParams
 
 @Service
 class CrudExampleServiceBean @Autowired constructor(
-        private val crudExampleRepository: CrudExampleRepository
+    private val crudExampleRepository: CrudExampleRepository
 ) : CrudExampleService {
 
-    override fun search(query: String, page: Int, size: Int, sortBy: SortByFields, direction: Sort.Direction): Page<CrudExample> {
-        return this.crudExampleRepository.search(query.toLowerCase(), PageAttr.getPageRequest(page, size, sortBy.fieldName, direction))
+    override fun search(params: PageableParams): Page<CrudExample> {
+        return this.crudExampleRepository.search(params.query, PageAttr.getPageRequest(params))
     }
 
     override fun save(entity: CrudExample): CrudExample {

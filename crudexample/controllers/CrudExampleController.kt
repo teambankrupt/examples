@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
+import com.example.coreweb.utils.PageableParams
 import org.springframework.data.domain.Sort
 
 @RestController
@@ -40,7 +41,7 @@ class CrudExampleController @Autowired constructor(
                         @RequestParam("size", defaultValue = "10") size: Int,
                         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
                         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction): ResponseEntity<Page<CrudExampleDto>> {
-        val entities = this.crudExampleService.search(query, page, size, sortBy, direction)
+        val entities = this.crudExampleService.search(PageableParams.of(query, page, size, sortBy, direction))
         return ResponseEntity.ok(entities.map { this.crudExampleMapper.map(it) })
     }
 
