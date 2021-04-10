@@ -634,3 +634,7 @@ alter table acl.profiles drop gender;
 alter table core_web.contacts add column is_self boolean not null default false;
 alter table core_web.contact_addresses drop constraint UK_mxmb2y0iu8624h4rrdamayobp;
 alter table core_web.locations add column image varchar(511) null;
+
+truncate table core_web.contacts restart identity cascade;
+alter table core_web.contacts add column address_id bigint not null default 0 references core_web.global_addresss;
+drop table core_web.contact_addresses;
