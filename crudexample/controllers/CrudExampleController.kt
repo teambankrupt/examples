@@ -36,7 +36,7 @@ class CrudExampleController @Autowired constructor(
     */
 
     @GetMapping(Route.V1.SEARCH_CRUDEXAMPLES)
-    override fun search(@RequestParam("q", defaultValue = "") query: String,
+    override fun search(@RequestParam("q", required = false) query: String?,
                         @RequestParam("page", defaultValue = "0") page: Int,
                         @RequestParam("size", defaultValue = "10") size: Int,
                         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
