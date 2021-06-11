@@ -44,7 +44,7 @@ class CrudExampleWebController @Autowired constructor(
                         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction,
                         model: Model): String {
         val entities = this.crudExampleService.search(PageableParams.of(query, page, size, sortBy, direction))
-        model.addAttribute("crudexamples", entities)
+        model.addAttribute("crudexamples", entities.map { this.crudExampleMapper.map(it) })
         return "crudexamples/fragments/all"
     }
 
@@ -72,7 +72,7 @@ class CrudExampleWebController @Autowired constructor(
     @GetMapping(Route.V1.ADMIN_UPDATE_CRUDEXAMPLE_PAGE)
     override fun updatePage(@PathVariable("id") id: Long, model: Model): String {
         val entity = this.crudExampleService.find(id).orElseThrow { ExceptionUtil.notFound("CrudExample", id) }
-        model.addAttribute("crudexample", entity)
+        model.addAttribute("crudexample", this.crudExampleMapper.map(entity))
         return "crudexamples/fragments/create"
     }
 
