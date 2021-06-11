@@ -21,7 +21,7 @@ import org.springframework.data.domain.Sort
 class CrudExampleController @Autowired constructor(
         private val crudExampleService: CrudExampleService,
         private val crudExampleMapper: CrudExampleMapper
-) : CrudControllerV2<CrudExampleDto> {
+) : CrudControllerV3<CrudExampleDto> {
 
     /*
         COPY THESE URLS TO ROUTE FILE AND ADJUST

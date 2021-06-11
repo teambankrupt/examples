@@ -20,7 +20,7 @@ import com.example.coreweb.utils.PageableParams
 class CrudExampleWebController @Autowired constructor(
         private val crudExampleService: CrudExampleService,
         private val crudExampleMapper: CrudExampleMapper
-) : CrudWebControllerV2<CrudExampleDto> {
+) : CrudWebControllerV3<CrudExampleDto> {
 
     /*
         COPY THESE URLS TO ROUTE FILE AND ADJUST
@@ -37,7 +37,7 @@ class CrudExampleWebController @Autowired constructor(
     */
 
     @GetMapping(Route.V1.ADMIN_SEARCH_CRUDEXAMPLES)
-    override fun search(@RequestParam("q", defaultValue = "") query: String,
+    override fun search(@RequestParam("q", required = false) query: String?,
                         @RequestParam("page", defaultValue = "0") page: Int,
                         @RequestParam("size", defaultValue = "10") size: Int,
                         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
