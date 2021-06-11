@@ -5,7 +5,7 @@ import com.example.app.domains.crudexample.models.mappers.CrudExampleMapper
 import com.example.app.domains.crudexample.services.CrudExampleService
 import com.example.app.routing.Route
 import com.example.common.utils.ExceptionUtil
-import com.example.coreweb.domains.base.controllers.CrudControllerV2
+import com.example.coreweb.domains.base.controllers.CrudControllerV3
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
