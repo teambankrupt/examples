@@ -52,7 +52,7 @@ class CrudExampleWebController @Autowired constructor(
     override fun find(@PathVariable("id") id: Long,
                       model: Model): String {
         val entity = this.crudExampleService.find(id).orElseThrow { ExceptionUtil.notFound("CrudExample", id) }
-        model.addAttribute("crudexample", entity)
+        model.addAttribute("crudexample", this.crudExampleMapper.map(entity))
         return "crudexamples/fragments/details"
     }
 
