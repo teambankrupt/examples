@@ -640,7 +640,7 @@ alter table core_web.contacts add column address_id bigint not null default 0 re
 drop table core_web.contact_addresses;
 
 -- New Migration
-create schema if not exists file_management;
-alter schema file_management owner to demouser;
+create schema if not exists cms;
+alter schema cms owner to demouser;
 
-alter table uploaded_files set schema file_management;
+alter table uploaded_files set schema cms;
