@@ -700,3 +700,7 @@ alter table if exists cms.content_ph_values
 alter table cms.prepared_contents add column title varchar(255) not null default '';
 
 alter table cms.prepared_contents alter resolved_content type text;
+
+-- New Migration
+alter table cms.content_templates add column type varchar(12) not null default 'GENERAL';
+update cms.content_templates set type = 'GENERAL' WHERE true;
