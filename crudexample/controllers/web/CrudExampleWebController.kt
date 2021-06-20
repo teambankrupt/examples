@@ -25,18 +25,18 @@ class CrudExampleWebController @Autowired constructor(
     /*
         COPY THESE URLS TO ROUTE FILE AND ADJUST
         ------------------------------------------------------
-        // CrudExamples (Admin)
-        const val ADMIN_SEARCH_CRUDEXAMPLES = "$ADMIN/crudexamples"
-        const val ADMIN_CREATE_CRUDEXAMPLE_PAGE = "$ADMIN/crudexamples/create"
-        const val ADMIN_CREATE_CRUDEXAMPLE = "$ADMIN/crudexamples"
-        const val ADMIN_FIND_CRUDEXAMPLE = "$ADMIN/crudexamples/{id}"
-        const val ADMIN_UPDATE_CRUDEXAMPLE_PAGE = "$ADMIN/crudexamples/{id}/update"
-        const val ADMIN_UPDATE_CRUDEXAMPLE = "$ADMIN/crudexamples/{id}"
-        const val ADMIN_DELETE_CRUDEXAMPLE = "$ADMIN/crudexamples/{id}/delete"
+        // CrudExamples (Web)
+        const val WEB_SEARCH_CRUDEXAMPLES = "/crudexamples"
+        const val WEB_CREATE_CRUDEXAMPLE_PAGE = "/crudexamples/create"
+        const val WEB_CREATE_CRUDEXAMPLE = "/crudexamples"
+        const val WEB_FIND_CRUDEXAMPLE = "/crudexamples/{id}"
+        const val WEB_UPDATE_CRUDEXAMPLE_PAGE = "/crudexamples/{id}/update"
+        const val WEB_UPDATE_CRUDEXAMPLE = "/crudexamples/{id}"
+        const val WEB_DELETE_CRUDEXAMPLE = "/crudexamples/{id}/delete"
         ------------------------------------------------------
     */
 
-    @GetMapping(Route.V1.ADMIN_SEARCH_CRUDEXAMPLES)
+    @GetMapping(Route.V1.WEB_SEARCH_CRUDEXAMPLES)
     override fun search(@RequestParam("q", required = false) query: String?,
                         @RequestParam("page", defaultValue = "0") page: Int,
                         @RequestParam("size", defaultValue = "10") size: Int,
@@ -48,7 +48,7 @@ class CrudExampleWebController @Autowired constructor(
         return "crudexamples/fragments/all"
     }
 
-    @GetMapping(Route.V1.ADMIN_FIND_CRUDEXAMPLE)
+    @GetMapping(Route.V1.WEB_FIND_CRUDEXAMPLE)
     override fun find(@PathVariable("id") id: Long,
                       model: Model): String {
         val entity = this.crudExampleService.find(id).orElseThrow { ExceptionUtil.notFound("CrudExample", id) }
@@ -56,42 +56,42 @@ class CrudExampleWebController @Autowired constructor(
         return "crudexamples/fragments/details"
     }
 
-    @GetMapping(Route.V1.ADMIN_CREATE_CRUDEXAMPLE_PAGE)
+    @GetMapping(Route.V1.WEB_CREATE_CRUDEXAMPLE_PAGE)
     override fun createPage(model: Model): String {
         return "crudexamples/fragments/create"
     }
 
-    @PostMapping(Route.V1.ADMIN_CREATE_CRUDEXAMPLE)
+    @PostMapping(Route.V1.WEB_CREATE_CRUDEXAMPLE)
     override fun create(@Valid @ModelAttribute dto: CrudExampleDto,
                         redirectAttributes: RedirectAttributes): String {
         val entity = this.crudExampleService.save(this.crudExampleMapper.map(dto, null))
         redirectAttributes.addFlashAttribute("message", "Success!!")
-        return "redirect:${Route.V1.ADMIN_FIND_CRUDEXAMPLE.replace("{id}", entity.id.toString())}"
+        return "redirect:${Route.V1.WEB_FIND_CRUDEXAMPLE.replace("{id}", entity.id.toString())}"
     }
 
-    @GetMapping(Route.V1.ADMIN_UPDATE_CRUDEXAMPLE_PAGE)
+    @GetMapping(Route.V1.WEB_UPDATE_CRUDEXAMPLE_PAGE)
     override fun updatePage(@PathVariable("id") id: Long, model: Model): String {
         val entity = this.crudExampleService.find(id).orElseThrow { ExceptionUtil.notFound("CrudExample", id) }
         model.addAttribute("crudexample", this.crudExampleMapper.map(entity))
         return "crudexamples/fragments/create"
     }
 
-    @PostMapping(Route.V1.ADMIN_UPDATE_CRUDEXAMPLE)
+    @PostMapping(Route.V1.WEB_UPDATE_CRUDEXAMPLE)
     override fun update(@PathVariable("id") id: Long,
                         @Valid @ModelAttribute dto: CrudExampleDto,
                         redirectAttributes: RedirectAttributes): String {
         var entity = this.crudExampleService.find(id).orElseThrow { ExceptionUtil.notFound("CrudExample", id) }
         entity = this.crudExampleService.save(this.crudExampleMapper.map(dto, entity))
         redirectAttributes.addFlashAttribute("message", "Success!!")
-        return "redirect:${Route.V1.ADMIN_FIND_CRUDEXAMPLE.replace("{id}", entity.id.toString())}"
+        return "redirect:${Route.V1.WEB_FIND_CRUDEXAMPLE.replace("{id}", entity.id.toString())}"
     }
 
-    @PostMapping(Route.V1.ADMIN_DELETE_CRUDEXAMPLE)
+    @PostMapping(Route.V1.WEB_DELETE_CRUDEXAMPLE)
     override fun delete(@PathVariable("id") id: Long,
                         redirectAttributes: RedirectAttributes): String {
         this.crudExampleService.delete(id, true)
         redirectAttributes.addFlashAttribute("message", "Deleted!!")
-        return "redirect:${Route.V1.ADMIN_SEARCH_CRUDEXAMPLES}";
+        return "redirect:${Route.V1.WEB_SEARCH_CRUDEXAMPLES}";
     }
 
 }
