@@ -644,3 +644,59 @@ create schema if not exists cms;
 alter schema cms owner to demouser;
 
 alter table uploaded_files set schema cms;
+
+create table cms.content_templates
+(
+    id         bigserial    not null,
+    created_at timestamp    not null,
+    created_by varchar(255),
+    deleted    boolean      not null,
+    updated_at timestamp,
+    updated_by varchar(255),
+    uuid_str   varchar(255) not null,
+    content    TEXT     not null,
+    title      varchar(255) not null,
+    primary key (id)
+);
+alter table if exists cms.content_templates
+    add constraint UK_inyc6dj2hy6mvobe2vf79jbr7 unique (uuid_str);
+
+create table cms.c_template_placeholders
+(
+    content_template_id int8 not null,
+    placeholders        varchar(255)
+);
+alter table if exists cms.c_template_placeholders
+    add constraint FKbgqpnpuw1s1xfn5kaflmfh4ej foreign key (content_template_id) references cms.content_templates;
+create table cms.prepared_contents
+(
+    id               bigserial    not null,
+    created_at       timestamp    not null,
+    created_by       varchar(255),
+    deleted          boolean      not null,
+    updated_at       timestamp,
+    updated_by       varchar(255),
+    uuid_str         varchar(255) not null,
+    resolved_content varchar(255) not null,
+    status           varchar(255) not null,
+    template_id      int8         not null,
+    primary key (id)
+);
+alter table if exists cms.prepared_contents
+    add constraint UK_4msnrbx18cm83j5ij7t3av71t unique (uuid_str);
+alter table if exists cms.prepared_contents
+    add constraint FKdbl4evstmjtdv99ug2cltwu3k foreign key (template_id) references cms.content_templates;
+
+create table cms.content_ph_values
+(
+    prepared_content_id int8         not null,
+    ph_value            varchar(255) not null,
+    placeholder         varchar(255) not null,
+    primary key (prepared_content_id, placeholder)
+);
+alter table if exists cms.content_ph_values
+    add constraint FKk9bnfo5u0pf7wd28txmi49ajc foreign key (prepared_content_id) references cms.prepared_contents;
+
+alter table cms.prepared_contents add column title varchar(255) not null default '';
+
+alter table cms.prepared_contents alter resolved_content type text;
