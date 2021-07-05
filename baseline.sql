@@ -704,3 +704,87 @@ alter table cms.prepared_contents alter resolved_content type text;
 -- New Migration
 alter table cms.content_templates add column type varchar(12) not null default 'GENERAL';
 update cms.content_templates set type = 'GENERAL' WHERE true;
+
+-- New Migration
+create table cms.site_pages
+(
+    id          bigserial    not null,
+    created_at  timestamp    not null,
+    created_by  varchar(255),
+    deleted     boolean      not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    uuid_str    varchar(255) not null,
+    description varchar(255),
+    slug        varchar(255) not null,
+    title       varchar(255) not null,
+    primary key (id)
+);
+
+alter table if exists cms.site_pages
+    add constraint UK_7pp4yryhdrai0ve3r4kro1mst unique (uuid_str);
+
+create table cms.sites
+(
+    id              bigserial    not null,
+    created_at      timestamp    not null,
+    created_by      varchar(255),
+    deleted         boolean      not null,
+    updated_at      timestamp,
+    updated_by      varchar(255),
+    uuid_str        varchar(255) not null,
+    description     varchar(255),
+    domain          varchar(255) not null,
+    tagline         varchar(255) not null,
+    title           varchar(255) not null,
+    content_page_id int8,
+    home_page_id    int8,
+    owner_id        int8         not null,
+    primary key (id)
+);
+alter table if exists cms.sites
+    add constraint FKo5bopbcoyv017c9pqspi6971i foreign key (content_page_id) references cms.site_pages;
+alter table if exists cms.sites
+    add constraint FKo6p0ys3919cylg9oqu41r6y8w foreign key (home_page_id) references cms.site_pages;
+alter table if exists cms.sites
+    add constraint UK_s0ju9x1aae3kxhfln4vxe0emn unique (uuid_str);
+alter table if exists cms.sites
+    add constraint FKeok06lq731656kw31xgji0m3f foreign key (owner_id) references auth.m_users;
+-- New Migration
+create table cms.site_contents
+(
+    id           bigserial    not null,
+    created_at   timestamp    not null,
+    created_by   varchar(255),
+    deleted      boolean      not null,
+    updated_at   timestamp,
+    updated_by   varchar(255),
+    uuid_str     varchar(255) not null,
+    content      TEXT         not null,
+    published    boolean,
+    published_on timestamp,
+    slug         varchar(255) not null,
+    title        varchar(255) not null,
+    site_id      int8         not null,
+    primary key (id)
+);
+alter table if exists cms.site_contents
+    add constraint UK_sgqwxldl4myqwdh4qvbgx2r2g unique (uuid_str);
+alter table if exists cms.site_contents
+    add constraint FK3sa6d587g9kqpjx3dfnw00l7b foreign key (site_id) references cms.sites;
+
+alter table if exists cms.site_pages add column content_id bigint not null default 0 references cms.site_contents;
+alter table if exists cms.site_pages add column site_id bigint not null default 0 references cms.sites;
+-- New Migration
+truncate table cms.sites restart identity cascade;
+alter table cms.sites add unique(domain);
+
+truncate table cms.site_pages restart identity cascade;
+alter table cms.site_pages add unique(slug);
+
+truncate table cms.site_contents restart identity cascade;
+alter table cms.site_contents add unique(slug);
+-- New Migration
+alter table cms.site_pages drop content_id;
+truncate table cms.site_pages restart identity cascade;
+alter table cms.site_pages add column content text not null default '';
