@@ -788,3 +788,6 @@ alter table cms.site_contents add unique(slug);
 alter table cms.site_pages drop content_id;
 truncate table cms.site_pages restart identity cascade;
 alter table cms.site_pages add column content text not null default '';
+
+-- New Migration
+alter table core_web.locations add column zip_code varchar(100);
