@@ -791,3 +791,6 @@ alter table cms.site_pages add column content text not null default '';
 
 -- New Migration
 alter table core_web.locations add column zip_code varchar(100);
+
+alter table auth.m_users add column photo varchar(512) null;
+alter table auth.m_users rename column photo to avatar;
