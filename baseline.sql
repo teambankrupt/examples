@@ -794,3 +794,9 @@ alter table core_web.locations add column zip_code varchar(100);
 
 alter table auth.m_users add column photo varchar(512) null;
 alter table auth.m_users rename column photo to avatar;
+
+-- New Migration
+alter table acl.profiles
+    add is_public boolean null default false;
+update acl.profiles set is_public=true where true;
+alter table acl.profiles alter column is_public set not null;
