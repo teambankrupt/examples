@@ -2,11 +2,11 @@ package com.example.app.domains.crudexample.models.mappers
 
 import com.example.app.domains.crudexample.models.dtos.CrudExampleDto
 import com.example.app.domains.crudexample.models.entities.CrudExample
-import com.example.coreweb.domains.base.models.mappers.BaseMapper
+import com.example.coreweb.domains.base.models.mappers.BaseMapperV2
 import org.springframework.stereotype.Component
 
 @Component
-class CrudExampleMapper : BaseMapper<CrudExample, CrudExampleDto> {
+class CrudExampleMapper : BaseMapperV2<CrudExample, CrudExampleDto> {
 
     override fun map(entity: CrudExample): CrudExampleDto {
         val dto = CrudExampleDto()
