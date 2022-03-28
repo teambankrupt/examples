@@ -800,3 +800,9 @@ alter table acl.profiles
     add is_public boolean null default false;
 update acl.profiles set is_public=true where true;
 alter table acl.profiles alter column is_public set not null;
+
+-- Mar 29, 2022
+CREATE SCHEMA files;
+ALTER SCHEMA files OWNER TO demouser;
+
+ALTER TABLE cms.uploaded_files SET SCHEMA files;
