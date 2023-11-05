@@ -806,3 +806,29 @@ CREATE SCHEMA files;
 ALTER SCHEMA files OWNER TO demouser;
 
 ALTER TABLE cms.uploaded_files SET SCHEMA files;
+
+-- Nov 5, 2023
+create table core_web.labels
+(
+    id          bigserial    not null,
+    created_at  timestamp    not null,
+    created_by  varchar(255),
+    deleted     boolean      not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    uuid_str    varchar(255) not null,
+    version     bigint       not null default 1,
+    path        varchar(255),
+    color       int4         not null,
+    description varchar(500) not null,
+    image       varchar(255),
+    name        varchar(255) not null,
+    parent_id   int8,
+    primary key (id)
+);
+alter table if exists core_web.labels
+    add constraint UK_3a6fqxscl3xyb6g98vgs4af30 unique (uuid_str);
+alter table if exists core_web.labels
+    add constraint FKn4bx30fm5qlwx5c61p66sgq0k foreign key (parent_id) references core_web.labels;
+-- New Migration
+alter table core_web.labels alter column color type varchar(255)
