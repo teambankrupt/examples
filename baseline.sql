@@ -831,4 +831,14 @@ alter table if exists core_web.labels
 alter table if exists core_web.labels
     add constraint FKn4bx30fm5qlwx5c61p66sgq0k foreign key (parent_id) references core_web.labels;
 -- New Migration
-alter table core_web.labels alter column color type varchar(255)
+alter table core_web.labels alter column color type varchar(255);
+
+
+-- Nov 25, 2023
+alter table core_web.labels add column background_color varchar(10) not null default '#FFFFFF';
+update core_web.labels set color='#000000' where true;
+alter table core_web.labels alter column color type varchar(10);
+alter table core_web.labels alter column color set not null;
+
+alter table core_web.labels add column icon varchar(255) null;
+alter table core_web.labels add column ui_height int not null default 100;
