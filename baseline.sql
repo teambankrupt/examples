@@ -842,3 +842,8 @@ alter table core_web.labels alter column color set not null;
 
 alter table core_web.labels add column icon varchar(255) null;
 alter table core_web.labels add column ui_height int not null default 100;
+
+-- New Migration
+alter table core_web.labels add code varchar(100) null;
+update core_web.labels set code=uuid_str where true;
+alter table core_web.labels alter column code set not null;
