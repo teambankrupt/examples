@@ -32,8 +32,11 @@ class CrudExampleServiceBean @Autowired constructor(
     }
 
     override fun delete(id: Long, softDelete: Boolean) {
+        val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("CrudExample", id) }
+        if (SecurityContext.getCurrentUser().isAdmin.not() && !entity.isMine) {
+            throw ExceptionUtil.forbidden("You are not allowed to delete it!")
+        }
         if (softDelete) {
-            val entity = this.find(id).orElseThrow { ExceptionUtil.notFound("CrudExample", id) }
             entity.isDeleted = true
             this.crudExampleRepository.save(entity)
             return
