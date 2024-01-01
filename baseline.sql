@@ -851,3 +851,119 @@ alter table core_web.labels alter column code set not null;
 -- Nov 26, 2023
 alter table core_web.labels add serial integer not null default 0;
 alter table core_web.labels add flagship boolean not null default false;
+
+-- Jan 1, 2024
+-- New Migration
+CREATE TABLE auth.request_credentials
+(
+    id                                      bigserial    not null,
+    created_at                              timestamp    not null,
+    created_by                              varchar(255),
+    deleted                                 boolean      not null,
+    updated_at                              timestamp,
+    updated_by                              varchar(255),
+    uuid_str                                varchar(255) not null,
+    version                                 bigint       not null default 1,
+
+    -- Significant Headers
+    ip                                      inet,
+    body                                    text,
+    user_agent_header                       TEXT,
+    x_forwarded_for_header                  TEXT,
+    authorization_header                    TEXT,
+    cookie_header                           TEXT,
+    referer_header                          TEXT,
+    x_frame_options_header                  VARCHAR(256),
+    content_type_header                     VARCHAR(256),
+    origin_header                           VARCHAR(256),
+    x_http_method_override_header           VARCHAR(256),
+    content_security_policy_header          TEXT,
+
+    -- Non-Significant Headers
+    accept_header                           TEXT,
+    accept_language_header                  VARCHAR(256),
+    host_header                             VARCHAR(256),
+    cache_control_header                    VARCHAR(256),
+    connection_header                       VARCHAR(256),
+    content_length_header                   VARCHAR(256),
+    if_modified_since_header                VARCHAR(256),
+    if_none_match_header                    VARCHAR(256),
+    accept_encoding_header                  TEXT,
+    range_header                            VARCHAR(256),
+    x_requested_with_header                 VARCHAR(256),
+    x_forwarded_host_header                 VARCHAR(256),
+    x_forwarded_proto_header                VARCHAR(256),
+    dnt_header                              VARCHAR(256),
+    accept_charset_header                   VARCHAR(256),
+    accept_datetime_header                  VARCHAR(256),
+    access_control_request_method_header    VARCHAR(256),
+    access_control_request_headers_header   VARCHAR(256),
+    forward_header                          VARCHAR(256),
+    max_forwards_header                     VARCHAR(256),
+    pragma_header                           VARCHAR(256),
+    proxy_authorization_header              VARCHAR(256),
+    te_header                               VARCHAR(256),
+    upgrade_header                          VARCHAR(256),
+    via_header                              VARCHAR(256),
+    warning_header                          VARCHAR(256),
+    access_control_allow_origin_header      VARCHAR(256),
+    access_control_expose_headers_header    VARCHAR(256),
+    access_control_allow_credentials_header VARCHAR(256),
+    access_control_max_age_header           VARCHAR(256),
+    access_control_allow_methods_header     VARCHAR(256),
+    access_control_allow_headers_header     VARCHAR(256),
+    authorization_info_header               VARCHAR(256),
+    content_encoding_header                 VARCHAR(256),
+    forwarded_for_header                    VARCHAR(256),
+    if_range_header                         VARCHAR(256),
+    if_unmodified_since_header              VARCHAR(256),
+
+    primary key (id)
+);
+
+alter table if exists auth.request_credentials
+    add constraint UK_3a6fqxscl3xyb6hfiduwy74 unique (uuid_str);
+
+-- New Migration
+alter table auth.request_credentials add column invalidated boolean not null default false;
+
+-- New Migration
+ALTER TABLE auth.request_credentials ALTER COLUMN ip TYPE varchar(20);
+-- New Migration
+alter table auth.request_credentials add column uri varchar(255);
+
+-- Jan 1, 2024 - 2
+-- New Migration
+alter table core_web.labels add code varchar(100) null;
+update core_web.labels set code=uuid_str where true;
+alter table core_web.labels alter column code set not null;
+
+-- New Migration
+alter table core_web.labels add serial integer not null default 0;
+alter table core_web.labels add flagship boolean not null default false;
+
+alter table acl.ac_validation_tokens add column reg_method varchar(20);
+
+-- New Migration
+create table files.uploaded_images
+(
+    id         bigserial    not null,
+    created_at timestamp    not null,
+    created_by varchar(255),
+    deleted    boolean      not null,
+    updated_at timestamp,
+    updated_by varchar(255),
+    uuid_str   varchar(255) not null,
+    image_id   int8,
+    thumb_id   int8,
+    primary key (id)
+);
+alter table if exists files.uploaded_images
+    add constraint UK_ropusxgnb7mh5jv9da0qbg5pn unique (uuid_str);
+alter table if exists files.uploaded_images
+    add constraint FKf8lmu7jemk18n84tidvlcukwx foreign key (image_id) references files.uploaded_files;
+alter table if exists files.uploaded_images
+    add constraint FKlvffcd01tmly246p94xt9do7t foreign key (thumb_id) references files.uploaded_files;
+
+-- New Migration
+alter table files.uploaded_images add column version bigint not null default 1;
