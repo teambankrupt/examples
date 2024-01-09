@@ -967,3 +967,6 @@ alter table if exists files.uploaded_images
 
 -- New Migration
 alter table files.uploaded_images add column version bigint not null default 1;
+
+-- Jan 9, 2024
+alter table cms.prepared_contents add column css_classes varchar(255) not null default '';
