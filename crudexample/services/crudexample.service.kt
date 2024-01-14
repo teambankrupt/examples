@@ -3,6 +3,7 @@ package com.example.app.domains.crudexamples.services
 import arrow.core.Option
 import com.example.app.domains.crudexamples.models.entities.CrudExample
 import com.example.app.domains.crudexamples.repositories.CrudExampleRepository
+import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.toArrow
 import com.example.common.validation.ValidationV2
 import com.example.coreweb.domains.base.services.CrudServiceV5
@@ -14,7 +15,13 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Service
 import java.time.Instant
 
-interface CrudExampleService : CrudServiceV5<CrudExample>
+interface CrudExampleService : CrudServiceV5<CrudExample> {
+    fun search(
+        username: String?,
+        fromDate: Instant, toDate: Instant,
+        params: PageableParams
+    ): Page<CrudExample>
+}
 
 @Service
 class CrudExampleServiceBean @Autowired constructor(
@@ -33,7 +40,7 @@ class CrudExampleServiceBean @Autowired constructor(
         pageable = PageAttr.getPageRequest(params)
     )
 
-    override fun validations(): Set<ValidationV2<CrudExample>> = setOf(
+    override fun validations(asUser: UserAuth): Set<ValidationV2<CrudExample>> = setOf(
         titleValidation
     )
 

@@ -4,6 +4,7 @@ import arrow.core.flatMap
 import com.example.app.domains.crudexamples.models.dtos.*
 import com.example.app.domains.crudexamples.services.CrudExampleService
 import com.example.app.routing.Route
+import com.example.auth.config.security.SecurityContext
 import com.example.coreweb.domains.base.controllers.CrudControllerV4
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.utils.PageableParams
@@ -21,7 +22,7 @@ import javax.validation.Valid
 
 @RestController
 @Api(tags = ["CrudExamples"], description = "Description about CrudExamples")
-class CrudExampleController @Autowired constructor(
+class CrudExampleAdminController @Autowired constructor(
     private val env: Environment,
     private val crudExampleService: CrudExampleService,
 ) : CrudControllerV4<CrudExampleReq, CrudExampleBriefResponse, CrudExampleDetailResponse> {
@@ -39,7 +40,7 @@ class CrudExampleController @Autowired constructor(
           ------------------------------------------------------
      */
 
-    @GetMapping(Route.V1.CrudExamples.SEARCH)
+    @GetMapping(Route.V1.CrudExamples.Admin.SEARCH)
     override fun search(
         @RequestParam("username", required = false) username: String?,
         @RequestParam("from_date", required = false) fromDate: Instant?,
@@ -57,39 +58,47 @@ class CrudExampleController @Autowired constructor(
             params = PageableParams.of(query, page, size, sortBy, direction)
         ).toResponse { it.toBriefResponse() }
 
-    @GetMapping(Route.V1.CrudExamples.FIND)
+    @GetMapping(Route.V1.CrudExamples.Admin.FIND)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
         this.crudExampleService.getAsEither(id)
             .toResponse(debug = debug()) {
                 it.toDetailResponse()
             }
 
-    @PostMapping(Route.V1.CrudExamples.CREATE)
+    @PostMapping(Route.V1.CrudExamples.Admin.CREATE)
     override fun create(
         @Valid @RequestBody req: CrudExampleReq
     ): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        this.crudExampleService.save(req.asCrudExample())
-            .toResponse(debug = debug()) {
-                it.toDetailResponse()
-            }
+        this.crudExampleService.save(
+            entity = req.asCrudExample(),
+            asUser = SecurityContext.getCurrentUser()
+        ).toResponse(debug = debug()) {
+            it.toDetailResponse()
+        }
 
-    @PatchMapping(Route.V1.CrudExamples.UPDATE)
+    @PatchMapping(Route.V1.CrudExamples.Admin.UPDATE)
     override fun update(
         @PathVariable("id") id: Long,
         @Valid @RequestBody req: CrudExampleReq
     ): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
         this.crudExampleService.getAsEither(id)
-            .flatMap { this.crudExampleService.save(req.asCrudExample(it)) }
+            .flatMap {
+                this.crudExampleService.save(
+                    entity = req.asCrudExample(it),
+                    asUser = SecurityContext.getCurrentUser()
+                )
+            }
             .toResponse(debug = debug()) {
                 it.toDetailResponse()
             }
 
-    @DeleteMapping(Route.V1.CrudExamples.DELETE)
+    @DeleteMapping(Route.V1.CrudExamples.Admin.DELETE)
     override fun delete(
         @PathVariable("id") id: Long
     ): ResponseEntity<ResponseData<Boolean>> =
-        this.crudExampleService.delete(id, true)
-            .toResponse(debug = debug()) { it }
+        this.crudExampleService.delete(
+            id = id, softDelete = true, asUser = SecurityContext.getCurrentUser()
+        ).toResponse(debug = debug()) { it }
 
     override fun getEnv(): Environment = this.env
 
