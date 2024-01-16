@@ -44,7 +44,7 @@ class CrudExampleServiceBean @Autowired constructor(
         titleValidation
     )
 
-    override fun find(id: Long): Option<CrudExample> =
+    override fun find(id: Long, asUser: UserAuth): Option<CrudExample> =
         this.crudExampleRepository.find(id).toArrow()
 
     override fun getRepository(): JpaRepository<CrudExample, Long> = this.crudExampleRepository

@@ -60,7 +60,7 @@ class CrudExampleAdminController @Autowired constructor(
 
     @GetMapping(Route.V1.CrudExamples.Admin.FIND)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        this.crudExampleService.getAsEither(id)
+        this.crudExampleService.getAsEither(id, asUser = SecurityContext.getCurrentUser())
             .toResponse(debug = debug()) {
                 it.toDetailResponse()
             }
@@ -81,7 +81,7 @@ class CrudExampleAdminController @Autowired constructor(
         @PathVariable("id") id: Long,
         @Valid @RequestBody req: CrudExampleReq
     ): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        this.crudExampleService.getAsEither(id)
+        this.crudExampleService.getAsEither(id, asUser = SecurityContext.getCurrentUser())
             .flatMap {
                 this.crudExampleService.save(
                     entity = req.asCrudExample(it),
