@@ -6,6 +6,7 @@ import com.example.app.domains.crudexamples.services.CrudExampleService
 import com.example.app.routing.Route
 import com.example.auth.config.security.SecurityContext
 import com.example.coreweb.domains.base.controllers.CrudControllerV4
+import com.example.coreweb.domains.base.controllers.CrudControllerV5
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.utils.PageableParams
 import com.example.coreweb.utils.ResponseData
@@ -25,22 +26,25 @@ import javax.validation.Valid
 class CrudExampleAdminController @Autowired constructor(
     private val env: Environment,
     private val crudExampleService: CrudExampleService,
-) : CrudControllerV4<CrudExampleReq, CrudExampleBriefResponse, CrudExampleDetailResponse> {
+) : CrudControllerV5<CrudExampleReq, CrudExampleBriefResponse, CrudExampleDetailResponse> {
 
     /*
           COPY THESE URLS TO ROUTE FILE AND ADJUST
           ------------------------------------------------------
           object CrudExamples {
-            const val SEARCH = "$API/crudexamples"
-            const val CREATE = "$API/crudexamples"
-            const val FIND = "$API/crudexamples/{id}"
-            const val UPDATE = "$API/crudexamples/{id}"
-            const val DELETE = "$API/crudexamples/{id}"
-          }
+            object AdminApis {
+                const val SEARCH = "$API/admin/crudexamples"
+                const val CREATE = "$API/admin/crudexamples"
+                const val FIND = "$API/admin/crudexamples/{id}"
+                const val UPDATE = "$API/admin/crudexamples/{id}"
+                const val DELETE = "$API/admin/crudexamples/{id}"
+            }
+            object UserApis{}
+        }
           ------------------------------------------------------
      */
 
-    @GetMapping(Route.V1.CrudExamples.Admin.SEARCH)
+    @GetMapping(Route.V1.CrudExamples.AdminApis.SEARCH)
     override fun search(
         @RequestParam("username", required = false) username: String?,
         @RequestParam("from_date", required = false) fromDate: Instant?,
@@ -49,7 +53,8 @@ class CrudExampleAdminController @Autowired constructor(
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
-        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction
+        @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction,
+        @RequestParam extra: Map<String, String>,
     ): ResponseEntity<ResponseData<Page<CrudExampleBriefResponse>>> =
         this.crudExampleService.search(
             username = username,
@@ -58,14 +63,14 @@ class CrudExampleAdminController @Autowired constructor(
             params = PageableParams.of(query, page, size, sortBy, direction)
         ).toResponse { it.toBriefResponse() }
 
-    @GetMapping(Route.V1.CrudExamples.Admin.FIND)
+    @GetMapping(Route.V1.CrudExamples.AdminApis.FIND)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
         this.crudExampleService.getAsEither(id, asUser = SecurityContext.getCurrentUser())
             .toResponse(debug = debug()) {
                 it.toDetailResponse()
             }
 
-    @PostMapping(Route.V1.CrudExamples.Admin.CREATE)
+    @PostMapping(Route.V1.CrudExamples.AdminApis.CREATE)
     override fun create(
         @Valid @RequestBody req: CrudExampleReq
     ): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
@@ -76,7 +81,7 @@ class CrudExampleAdminController @Autowired constructor(
             it.toDetailResponse()
         }
 
-    @PatchMapping(Route.V1.CrudExamples.Admin.UPDATE)
+    @PatchMapping(Route.V1.CrudExamples.AdminApis.UPDATE)
     override fun update(
         @PathVariable("id") id: Long,
         @Valid @RequestBody req: CrudExampleReq
@@ -92,7 +97,7 @@ class CrudExampleAdminController @Autowired constructor(
                 it.toDetailResponse()
             }
 
-    @DeleteMapping(Route.V1.CrudExamples.Admin.DELETE)
+    @DeleteMapping(Route.V1.CrudExamples.AdminApis.DELETE)
     override fun delete(
         @PathVariable("id") id: Long
     ): ResponseEntity<ResponseData<Boolean>> =
