@@ -970,3 +970,16 @@ alter table files.uploaded_images add column version bigint not null default 1;
 
 -- Jan 9, 2024
 alter table cms.prepared_contents add column css_classes varchar(255) not null default '';
+
+-- Jan 24, 2024
+-- New Migration
+alter table cms.content_templates add column code varchar(255);
+update cms.content_templates set code = uuid_str where true;
+alter table cms.content_templates alter column code set not null;
+alter table cms.content_templates add constraint content_templates_code_unique unique (code);
+
+alter table cms.content_templates add column version bigint not null default 1;
+
+-- New Migration
+alter table cms.content_templates add column css_classes varchar(255) not null default '';
+alter table cms.prepared_contents drop column css_classes;
