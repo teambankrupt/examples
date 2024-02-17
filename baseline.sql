@@ -983,3 +983,238 @@ alter table cms.content_templates add column version bigint not null default 1;
 -- New Migration
 alter table cms.content_templates add column css_classes varchar(255) not null default '';
 alter table cms.prepared_contents drop column css_classes;
+
+-- Feb 17, 2024
+create table core_web.qrtz_job_details
+(
+    sched_name        varchar(120) not null,
+    job_name          varchar(200) not null,
+    job_group         varchar(200) not null,
+    description       varchar(250),
+    job_class_name    varchar(250) not null,
+    is_durable        boolean      not null,
+    is_nonconcurrent  boolean      not null,
+    is_update_data    boolean      not null,
+    requests_recovery boolean      not null,
+    job_data          bytea,
+    primary key (sched_name, job_name, job_group)
+);
+
+alter table core_web.qrtz_job_details
+    owner to demouser;
+
+create index idx_qrtz_j_req_recovery
+    on core_web.qrtz_job_details (sched_name, requests_recovery);
+
+create index idx_qrtz_j_grp
+    on core_web.qrtz_job_details (sched_name, job_group);
+
+create table core_web.qrtz_triggers
+(
+    sched_name     varchar(120) not null,
+    trigger_name   varchar(200) not null,
+    trigger_group  varchar(200) not null,
+    job_name       varchar(200) not null,
+    job_group      varchar(200) not null,
+    description    varchar(250),
+    next_fire_time bigint,
+    prev_fire_time bigint,
+    priority       integer,
+    trigger_state  varchar(16)  not null,
+    trigger_type   varchar(8)   not null,
+    start_time     bigint       not null,
+    end_time       bigint,
+    calendar_name  varchar(200),
+    misfire_instr  smallint,
+    job_data       bytea,
+    primary key (sched_name, trigger_name, trigger_group),
+    foreign key (sched_name, job_name, job_group) references core_web.qrtz_job_details
+);
+
+alter table core_web.qrtz_triggers
+    owner to demouser;
+
+create index idx_qrtz_t_j
+    on core_web.qrtz_triggers (sched_name, job_name, job_group);
+
+create index idx_qrtz_t_jg
+    on core_web.qrtz_triggers (sched_name, job_group);
+
+create index idx_qrtz_t_c
+    on core_web.qrtz_triggers (sched_name, calendar_name);
+
+create index idx_qrtz_t_g
+    on core_web.qrtz_triggers (sched_name, trigger_group);
+
+create index idx_qrtz_t_state
+    on core_web.qrtz_triggers (sched_name, trigger_state);
+
+create index idx_qrtz_t_n_state
+    on core_web.qrtz_triggers (sched_name, trigger_name, trigger_group, trigger_state);
+
+create index idx_qrtz_t_n_g_state
+    on core_web.qrtz_triggers (sched_name, trigger_group, trigger_state);
+
+create index idx_qrtz_t_next_fire_time
+    on core_web.qrtz_triggers (sched_name, next_fire_time);
+
+create index idx_qrtz_t_nft_st
+    on core_web.qrtz_triggers (sched_name, trigger_state, next_fire_time);
+
+create index idx_qrtz_t_nft_misfire
+    on core_web.qrtz_triggers (sched_name, misfire_instr, next_fire_time);
+
+create index idx_qrtz_t_nft_st_misfire
+    on core_web.qrtz_triggers (sched_name, misfire_instr, next_fire_time, trigger_state);
+
+create index idx_qrtz_t_nft_st_misfire_grp
+    on core_web.qrtz_triggers (sched_name, misfire_instr, next_fire_time, trigger_group, trigger_state);
+
+create table core_web.qrtz_simple_triggers
+(
+    sched_name      varchar(120) not null,
+    trigger_name    varchar(200) not null,
+    trigger_group   varchar(200) not null,
+    repeat_count    bigint       not null,
+    repeat_interval bigint       not null,
+    times_triggered bigint       not null,
+    primary key (sched_name, trigger_name, trigger_group),
+    foreign key (sched_name, trigger_name, trigger_group) references core_web.qrtz_triggers
+);
+
+alter table core_web.qrtz_simple_triggers
+    owner to demouser;
+
+create table core_web.qrtz_cron_triggers
+(
+    sched_name      varchar(120) not null,
+    trigger_name    varchar(200) not null,
+    trigger_group   varchar(200) not null,
+    cron_expression varchar(120) not null,
+    time_zone_id    varchar(80),
+    primary key (sched_name, trigger_name, trigger_group),
+    foreign key (sched_name, trigger_name, trigger_group) references core_web.qrtz_triggers
+);
+
+alter table core_web.qrtz_cron_triggers
+    owner to demouser;
+
+create table core_web.qrtz_simprop_triggers
+(
+    sched_name    varchar(120) not null,
+    trigger_name  varchar(200) not null,
+    trigger_group varchar(200) not null,
+    str_prop_1    varchar(512),
+    str_prop_2    varchar(512),
+    str_prop_3    varchar(512),
+    int_prop_1    integer,
+    int_prop_2    integer,
+    long_prop_1   bigint,
+    long_prop_2   bigint,
+    dec_prop_1    numeric(13, 4),
+    dec_prop_2    numeric(13, 4),
+    bool_prop_1   boolean,
+    bool_prop_2   boolean,
+    primary key (sched_name, trigger_name, trigger_group),
+    constraint qrtz_simprop_triggers_sched_name_trigger_name_trigger_grou_fkey
+        foreign key (sched_name, trigger_name, trigger_group) references core_web.qrtz_triggers
+);
+
+alter table core_web.qrtz_simprop_triggers
+    owner to demouser;
+
+create table core_web.qrtz_blob_triggers
+(
+    sched_name    varchar(120) not null,
+    trigger_name  varchar(200) not null,
+    trigger_group varchar(200) not null,
+    blob_data     bytea,
+    primary key (sched_name, trigger_name, trigger_group),
+    foreign key (sched_name, trigger_name, trigger_group) references core_web.qrtz_triggers
+);
+
+alter table core_web.qrtz_blob_triggers
+    owner to demouser;
+
+create table core_web.qrtz_calendars
+(
+    sched_name    varchar(120) not null,
+    calendar_name varchar(200) not null,
+    calendar      bytea        not null,
+    primary key (sched_name, calendar_name)
+);
+
+alter table core_web.qrtz_calendars
+    owner to demouser;
+
+create table core_web.qrtz_paused_trigger_grps
+(
+    sched_name    varchar(120) not null,
+    trigger_group varchar(200) not null,
+    primary key (sched_name, trigger_group)
+);
+
+alter table core_web.qrtz_paused_trigger_grps
+    owner to demouser;
+
+create table core_web.qrtz_fired_triggers
+(
+    sched_name        varchar(120) not null,
+    entry_id          varchar(95)  not null,
+    trigger_name      varchar(200) not null,
+    trigger_group     varchar(200) not null,
+    instance_name     varchar(200) not null,
+    fired_time        bigint       not null,
+    sched_time        bigint       not null,
+    priority          integer      not null,
+    state             varchar(16)  not null,
+    job_name          varchar(200),
+    job_group         varchar(200),
+    is_nonconcurrent  boolean,
+    requests_recovery boolean,
+    primary key (sched_name, entry_id)
+);
+
+alter table core_web.qrtz_fired_triggers
+    owner to demouser;
+
+create index idx_qrtz_ft_trig_inst_name
+    on core_web.qrtz_fired_triggers (sched_name, instance_name);
+
+create index idx_qrtz_ft_inst_job_req_rcvry
+    on core_web.qrtz_fired_triggers (sched_name, instance_name, requests_recovery);
+
+create index idx_qrtz_ft_j_g
+    on core_web.qrtz_fired_triggers (sched_name, job_name, job_group);
+
+create index idx_qrtz_ft_jg
+    on core_web.qrtz_fired_triggers (sched_name, job_group);
+
+create index idx_qrtz_ft_t_g
+    on core_web.qrtz_fired_triggers (sched_name, trigger_name, trigger_group);
+
+create index idx_qrtz_ft_tg
+    on core_web.qrtz_fired_triggers (sched_name, trigger_group);
+
+create table core_web.qrtz_scheduler_state
+(
+    sched_name        varchar(120) not null,
+    instance_name     varchar(200) not null,
+    last_checkin_time bigint       not null,
+    checkin_interval  bigint       not null,
+    primary key (sched_name, instance_name)
+);
+
+alter table core_web.qrtz_scheduler_state
+    owner to demouser;
+
+create table core_web.qrtz_locks
+(
+    sched_name varchar(120) not null,
+    lock_name  varchar(40)  not null,
+    primary key (sched_name, lock_name)
+);
+
+alter table core_web.qrtz_locks
+    owner to demouser;
+
