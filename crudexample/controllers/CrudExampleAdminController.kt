@@ -54,7 +54,7 @@ class CrudExampleAdminController @Autowired constructor(
         @RequestParam("size", defaultValue = "10") size: Int,
         @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction,
-        @RequestParam extra: Map<String, String>,
+        @RequestParam(required = false) extra: Map<String, String>,
     ): ResponseEntity<ResponseData<Page<CrudExampleBriefResponse>>> =
         this.crudExampleService.search(
             username = username,
