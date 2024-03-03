@@ -1218,3 +1218,26 @@ create table core_web.qrtz_locks
 alter table core_web.qrtz_locks
     owner to demouser;
 
+-- New Migration
+create table core_web.configurations
+(
+    id          bigserial    not null,
+    created_at  timestamp    not null,
+    created_by  varchar(255),
+    deleted     boolean      not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    uuid_str    varchar(255) not null,
+    version     bigint       not null default 1,
+    namespace   varchar(20)  not null,
+    config_type varchar(20)  not null,
+    value_type  varchar(20)  not null,
+    key         varchar(50)  not null,
+    value       varchar(255) not null,
+    description varchar(255),
+    primary key (id)
+);
+alter table if exists core_web.configurations
+    add constraint UK_eix34l3hjc91pr6apn8254c3s unique (uuid_str);
+alter table if exists core_web.configurations
+    add constraint UK_2q3v3v3hjc91764hdg763gh67 unique (namespace, config_type, key);
