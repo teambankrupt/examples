@@ -40,7 +40,7 @@ class CrudExampleAdminController @Autowired constructor(
                 const val DELETE = "$API/admin/crudexamples/{id}"
             }
             object UserApis{}
-        }
+          }
           ------------------------------------------------------
      */
 
