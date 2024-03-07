@@ -1,6 +1,8 @@
 package com.example.app.domains.crudexamples.models.dtos
 
 import com.example.app.domains.crudexamples.models.entities.CrudExample
+import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.Instant
 
 data class CrudExampleBriefResponse(
     val id: Long,

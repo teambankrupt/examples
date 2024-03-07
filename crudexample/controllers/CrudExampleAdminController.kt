@@ -5,7 +5,6 @@ import com.example.app.domains.crudexamples.models.dtos.*
 import com.example.app.domains.crudexamples.services.CrudExampleService
 import com.example.app.routing.Route
 import com.example.auth.config.security.SecurityContext
-import com.example.coreweb.domains.base.controllers.CrudControllerV4
 import com.example.coreweb.domains.base.controllers.CrudControllerV5
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.utils.PageableParams
@@ -65,20 +64,24 @@ class CrudExampleAdminController @Autowired constructor(
 
     @GetMapping(Route.V1.CrudExamples.AdminApis.FIND)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        this.crudExampleService.getAsEither(id, asUser = SecurityContext.getCurrentUser())
-            .toResponse(debug = debug()) {
-                it.toDetailResponse()
-            }
+        SecurityContext.getCurrentUser().let { auth ->
+            this.crudExampleService.getAsEither(id, asUser = auth)
+                .toResponse(debug = debug()) {
+                    it.toDetailResponse()
+                }
+        }
 
     @PostMapping(Route.V1.CrudExamples.AdminApis.CREATE)
     override fun create(
         @Valid @RequestBody req: CrudExampleReq
     ): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        this.crudExampleService.save(
-            entity = req.asCrudExample(),
-            asUser = SecurityContext.getCurrentUser()
-        ).toResponse(debug = debug()) {
-            it.toDetailResponse()
+        SecurityContext.getCurrentUser().let { auth ->
+            this.crudExampleService.save(
+                entity = req.asCrudExample(),
+                asUser = auth
+            ).toResponse(debug = debug()) {
+                it.toDetailResponse()
+            }
         }
 
     @PatchMapping(Route.V1.CrudExamples.AdminApis.UPDATE)
