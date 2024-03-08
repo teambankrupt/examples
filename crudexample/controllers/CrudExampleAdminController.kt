@@ -64,7 +64,7 @@ class CrudExampleAdminController @Autowired constructor(
 
     @GetMapping(Route.V1.CrudExamples.AdminApis.FIND)
     override fun find(@PathVariable("id") id: Long): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        SecurityContext.getCurrentUser().let { auth ->
+        onSecuredContext { auth ->
             this.crudExampleService.getAsEither(id, asUser = auth)
                 .toResponse(debug = debug()) {
                     it.toDetailResponse()
@@ -75,7 +75,7 @@ class CrudExampleAdminController @Autowired constructor(
     override fun create(
         @Valid @RequestBody req: CrudExampleReq
     ): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        SecurityContext.getCurrentUser().let { auth ->
+        onSecuredContext { auth ->
             this.crudExampleService.save(
                 entity = req.asCrudExample(),
                 asUser = auth
