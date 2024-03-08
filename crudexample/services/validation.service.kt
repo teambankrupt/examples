@@ -9,5 +9,5 @@ val titleValidation = genericValidation<CrudExample>(
     instruction = "Please provide a title with at least 3 characters!",
     scopes = setOf(ValidationScope.Write, ValidationScope.Modify)
 ) {
-    it.title.length > 3
+    it.title.length >= 3
 }
