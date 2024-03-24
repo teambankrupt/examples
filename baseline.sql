@@ -1265,3 +1265,8 @@ alter table if exists core_web.allowed_domains
     add constraint UK_fv3cfk9hb2g4bev7r6mcgxl32 unique (uuid_str);
 alter table if exists core_web.allowed_domains
     add constraint UK_rpw992ceh6gyn3t75yg52kwha unique (domain);
+
+-- Mar 24, 2024
+INSERT INTO core_web.allowed_domains
+(id, created_at, created_by, deleted, updated_at, updated_by, uuid_str, version, active, description, domain)
+VALUES (1, '2024-03-24 17:30:17.000000', null, false, null, null, '3c38a6d2-ee40-43ee-a2a8-7c1616ce9279', 1, true, 'Domain for localhost', 'localhost');
