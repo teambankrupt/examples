@@ -1242,6 +1242,26 @@ alter table if exists core_web.configurations
 alter table if exists core_web.configurations
     add constraint UK_2q3v3v3hjc91764hdg763gh67 unique (namespace, config_type, key);
 
--- New Migration
+-- Mar 24, 2024
 alter table auth.m_users add column time_zone varchar(127) not null default 'UTC';
 update auth.m_users set time_zone = 'Asia/Dhaka' where time_zone='UTC';
+
+create table core_web.allowed_domains
+(
+    id          bigserial    not null,
+    created_at  timestamp    not null,
+    created_by  varchar(255),
+    deleted     boolean      not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    uuid_str    varchar(255) not null,
+    version     bigint       not null default 1,
+    active      boolean      not null,
+    description varchar(255) not null,
+    domain       varchar(255) not null,
+    primary key (id)
+);
+alter table if exists core_web.allowed_domains
+    add constraint UK_fv3cfk9hb2g4bev7r6mcgxl32 unique (uuid_str);
+alter table if exists core_web.allowed_domains
+    add constraint UK_rpw992ceh6gyn3t75yg52kwha unique (domain);
