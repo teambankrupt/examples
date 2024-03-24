@@ -1241,3 +1241,7 @@ alter table if exists core_web.configurations
     add constraint UK_eix34l3hjc91pr6apn8254c3s unique (uuid_str);
 alter table if exists core_web.configurations
     add constraint UK_2q3v3v3hjc91764hdg763gh67 unique (namespace, config_type, key);
+
+-- New Migration
+alter table auth.m_users add column time_zone varchar(127) not null default 'UTC';
+update auth.m_users set time_zone = 'Asia/Dhaka' where time_zone='UTC';
