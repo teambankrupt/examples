@@ -4,11 +4,11 @@ import arrow.core.flatMap
 import com.example.app.domains.crudexamples.models.dtos.*
 import com.example.app.domains.crudexamples.services.CrudExampleService
 import com.example.app.routing.Route
-import com.example.auth.config.security.SecurityContext
 import com.example.coreweb.domains.base.controllers.CrudControllerV5
 import com.example.coreweb.domains.base.models.enums.SortByFields
 import com.example.coreweb.utils.PageableParams
 import com.example.coreweb.utils.ResponseData
+import com.example.coreweb.utils.onSecuredContext
 import com.example.coreweb.utils.toResponse
 import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
@@ -89,24 +89,29 @@ class CrudExampleAdminController @Autowired constructor(
         @PathVariable("id") id: Long,
         @Valid @RequestBody req: CrudExampleReq
     ): ResponseEntity<ResponseData<CrudExampleDetailResponse>> =
-        this.crudExampleService.getAsEither(id, asUser = SecurityContext.getCurrentUser())
-            .flatMap {
-                this.crudExampleService.save(
-                    entity = req.asCrudExample(it),
-                    asUser = SecurityContext.getCurrentUser()
-                )
-            }
-            .toResponse(debug = debug()) {
-                it.toDetailResponse()
-            }
+        onSecuredContext { auth ->
+            this.crudExampleService.getAsEither(id, asUser = auth)
+                .flatMap {
+                    this.crudExampleService.save(
+                        entity = req.asCrudExample(it),
+                        asUser = auth
+                    )
+                }
+                .toResponse(debug = debug()) {
+                    it.toDetailResponse()
+                }
+        }
 
     @DeleteMapping(Route.V1.CrudExamples.AdminApis.DELETE)
     override fun delete(
         @PathVariable("id") id: Long
     ): ResponseEntity<ResponseData<Boolean>> =
-        this.crudExampleService.delete(
-            id = id, softDelete = true, asUser = SecurityContext.getCurrentUser()
-        ).toResponse(debug = debug()) { it }
+        onSecuredContext { auth ->
+            this.crudExampleService.delete(
+                id = id, softDelete = true, asUser = auth
+            ).toResponse(debug = debug()) { it }
+        }
+
 
     override fun getEnv(): Environment = this.env
 
