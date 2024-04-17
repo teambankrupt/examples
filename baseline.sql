@@ -1270,3 +1270,36 @@ alter table if exists core_web.allowed_domains
 INSERT INTO core_web.allowed_domains
 (id, created_at, created_by, deleted, updated_at, updated_by, uuid_str, version, active, description, domain)
 VALUES (1, '2024-03-24 17:30:17.000000', null, false, null, null, '3c38a6d2-ee40-43ee-a2a8-7c1616ce9279', 1, true, 'Domain for localhost', 'localhost');
+
+
+-- Apr 18, 2024
+create table core_web.events
+(
+    id              bigserial    not null,
+    created_at      timestamp    not null,
+    created_by      varchar(255),
+    deleted         boolean      not null,
+    updated_at      timestamp,
+    updated_by      varchar(255),
+    uuid_str        varchar(255) not null,
+    version         bigint       not null default 1,
+    description     text         not null,
+    end_at          timestamp,
+    image           varchar(255),
+    active          boolean      not null default true,
+    repeat_count    int4         not null,
+    repeat_interval int8         not null,
+    repetitive      boolean      not null,
+    scheduler_group varchar(255) not null,
+    scheduler_uid   varchar(255) not null,
+    start_at        timestamp    not null,
+    title           varchar(255) not null,
+    type            varchar(255) not null,
+    ref_id          int8,
+    user_id         int8         not null,
+    primary key (id)
+);
+alter table if exists core_web.events
+    add constraint UK_auxgro4sai6dyk65nqqijgbrb unique (uuid_str);
+alter table if exists core_web.events
+    add constraint FKic61sj91uk83mlan2asw2u8g4 foreign key (user_id) references auth.m_users;
