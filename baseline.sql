@@ -1303,3 +1303,8 @@ alter table if exists core_web.events
     add constraint UK_auxgro4sai6dyk65nqqijgbrb unique (uuid_str);
 alter table if exists core_web.events
     add constraint FKic61sj91uk83mlan2asw2u8g4 foreign key (user_id) references auth.m_users;
+
+-- May 08, 2024
+alter table core_web.events add column by_email boolean not null default false;
+alter table core_web.events add column by_phone boolean not null default false;
+alter table core_web.events add column by_push_notification boolean not null default false;
