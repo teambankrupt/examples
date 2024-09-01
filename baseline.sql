@@ -1308,3 +1308,29 @@ alter table if exists core_web.events
 alter table core_web.events add column by_email boolean not null default false;
 alter table core_web.events add column by_phone boolean not null default false;
 alter table core_web.events add column by_push_notification boolean not null default false;
+
+-- Sep 02, 2024
+create table core_web.menus
+(
+    id          bigserial    not null,
+    created_at  timestamp    not null,
+    created_by  varchar(255),
+    deleted     boolean      not null,
+    updated_at  timestamp,
+    updated_by  varchar(255),
+    uuid_str    varchar(255) not null,
+    version     bigint       not null default 1,
+    path        varchar(255),
+    description varchar(255) not null,
+    image       varchar(255),
+    link        varchar(255),
+    title       varchar(255) not null,
+    type        int4,
+    parent_id   int8,
+    primary key (id)
+);
+alter table if exists core_web.menus
+    add constraint UK_i19uiprtmd1o9cga6dbq0hjw2 unique (uuid_str);
+alter table if exists core_web.menus
+    add constraint FKcctt24h6nix02cxipt9rbqtnc foreign key (parent_id) references core_web.menus;
+
