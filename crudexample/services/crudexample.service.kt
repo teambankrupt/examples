@@ -7,8 +7,7 @@ import com.example.auth.entities.UserAuth
 import com.example.common.exceptions.toArrow
 import com.example.common.validation.ValidationV2
 import com.example.coreweb.domains.base.services.CrudServiceV5
-import com.example.coreweb.utils.PageAttr
-import com.example.coreweb.utils.PageableParams
+import com.example.coreweb.utils.PageableParamsV2
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.jpa.repository.JpaRepository
@@ -19,7 +18,7 @@ interface CrudExampleService : CrudServiceV5<CrudExample> {
     fun search(
         username: String?,
         fromDate: Instant, toDate: Instant,
-        params: PageableParams
+        params: PageableParamsV2
     ): Page<CrudExample>
 }
 
@@ -31,13 +30,13 @@ class CrudExampleServiceBean @Autowired constructor(
         username: String?,
         fromDate: Instant,
         toDate: Instant,
-        params: PageableParams
+        params: PageableParamsV2
     ): Page<CrudExample> = this.crudExampleRepository.search(
-        query = params.query,
+        query = params.query(),
         username = username,
         fromDate = fromDate,
         toDate = toDate,
-        pageable = PageAttr.getPageRequest(params)
+        pageable = params.toPageRequest<CrudExample>()
     )
 
     override fun validations(asUser: UserAuth): Set<ValidationV2<CrudExample>> = setOf(

@@ -4,9 +4,8 @@ import arrow.core.flatMap
 import com.example.app.domains.crudexamples.models.dtos.*
 import com.example.app.domains.crudexamples.services.CrudExampleService
 import com.example.app.routing.Route
-import com.example.coreweb.domains.base.controllers.CrudControllerV5
-import com.example.coreweb.domains.base.models.enums.SortByFields
-import com.example.coreweb.utils.PageableParams
+import com.example.coreweb.domains.base.controllers.CrudControllerV6
+import com.example.coreweb.utils.PageableParamsV2
 import com.example.coreweb.utils.ResponseData
 import com.example.coreweb.utils.onSecuredContext
 import com.example.coreweb.utils.toResponse
@@ -25,7 +24,7 @@ import javax.validation.Valid
 class CrudExampleAdminController @Autowired constructor(
     private val env: Environment,
     private val crudExampleService: CrudExampleService,
-) : CrudControllerV5<CrudExampleReq, CrudExampleBriefResponse, CrudExampleDetailResponse> {
+) : CrudControllerV6<CrudExampleReq, CrudExampleBriefResponse, CrudExampleDetailResponse> {
 
     /*
           COPY THESE URLS TO ROUTE FILE AND ADJUST
@@ -51,7 +50,7 @@ class CrudExampleAdminController @Autowired constructor(
         @RequestParam("q", required = false) query: String?,
         @RequestParam("page", defaultValue = "0") page: Int,
         @RequestParam("size", defaultValue = "10") size: Int,
-        @RequestParam("sort_by", defaultValue = "ID") sortBy: SortByFields,
+        @RequestParam("sort_by", defaultValue = "ID") sortBy: String,
         @RequestParam("sort_direction", defaultValue = "DESC") direction: Sort.Direction,
         @RequestParam(required = false) extra: Map<String, String>,
     ): ResponseEntity<ResponseData<Page<CrudExampleBriefResponse>>> =
@@ -59,7 +58,7 @@ class CrudExampleAdminController @Autowired constructor(
             username = username,
             fromDate = fromDate ?: Instant.EPOCH,
             toDate = toDate ?: Instant.now(),
-            params = PageableParams.of(query, page, size, sortBy, direction)
+            params = PageableParamsV2(query, page, size, sortBy, direction)
         ).toResponse { it.toBriefResponse() }
 
     @GetMapping(Route.V1.CrudExamples.AdminApis.FIND)
